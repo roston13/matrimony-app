@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Matches | Matrimony Match</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #fce1f1, #e8e0ff);
+            min-height: 100vh;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #7b2cbf;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fadeDown 1s ease;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.3);
+            animation: fadeUp 1.2s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a189a, #7b2cbf);
+            transform: scale(1.05);
+        }
+
+        .matches-container {
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            animation: fadeUp 1s ease;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(123, 44, 191, 0.2);
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d8b4fe, #fbcfe8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            margin: 0 auto 15px;
+        }
+
+        .name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #5a189a;
+        }
+
+        .details {
+            font-size: 0.95rem;
+            color: #555;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            margin-top: 40px;
+            font-size: 1.1rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h2>💞 Your Matches</h2>
+    <button onclick="generateMatch()">🔄 Generate New Matches</button>
+
+    <div class="matches-container" id="matchList"></div>
+
+    <div class="empty-state" id="emptyMsg" style="display:none;">
+        No matches found yet. Try updating your preferences 💌
+    </div>
+
+    <script>
+        function generateMatch() {
+            const user_id = localStorage.getItem("user_id");
+
+            fetch("http://localhost:3000/api/match/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id })
+            })
+                .then(res => res.json())
+                .then(data => displayMatches(data.matches || []));
+        }
+
+        function displayMatches(matches) {
+            const box = document.getElementById("matchList");
+            const emptyMsg = document.getElementById("emptyMsg");
+
+            box.innerHTML = "";
+
+            if (matches.length === 0) {
+                emptyMsg.style.display = "block";
+                return;
+            } else {
+                emptyMsg.style.display = "none";
+            }
+
+            matches.forEach(m => {
+                const initials = m.full_name ? m.full_name[0].toUpperCase() : "?";
+                box.innerHTML += `
+          <div class="card">
+            <div class="avatar">${initials}</div>
+            <div class="name">${m.full_name}</div>
+            <div class="details">
+              Age: ${m.age} | ${m.gender}<br>
+              City: ${m.city}<br>
+              Religion: ${m.religion}
+            </div>
+          </div>
+        `;
+            });
+        }
+
+        // auto-load matches
+        generateMatch();
+    </script>
+</body>
+
+</html>

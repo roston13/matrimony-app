@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profile | Matrimony Match</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts & Bootstrap -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(120deg, #f3e7e9, #e3eeff);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Background floating shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float 7s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .shape1 {
+            width: 200px;
+            height: 200px;
+            background-color: #c77dff;
+            top: 10%;
+            left: 8%;
+        }
+
+        .shape2 {
+            width: 160px;
+            height: 160px;
+            background-color: #bde0fe;
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Card */
+        .profile-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(123, 44, 191, 0.15);
+            padding: 40px 35px;
+            width: 100%;
+            max-width: 550px;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            color: #7b2cbf;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #9d4edd;
+            box-shadow: 0 0 8px rgba(157, 78, 221, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.3);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a189a, #7b2cbf);
+            transform: scale(1.04);
+        }
+
+        .illustration {
+            width: 110px;
+            height: 110px;
+            background: url('https://cdn-icons-png.flaticon.com/512/2922/2922510.png') no-repeat center/cover;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.3);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .next-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .next-link a {
+            color: #7b2cbf;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .next-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating background shapes -->
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+
+    <div class="profile-card" data-aos="zoom-in" data-aos-duration="1000">
+        <div class="illustration" data-aos="fade-down"></div>
+        <h2 data-aos="fade-up">Create / Update Profile</h2>
+
+        <form id="profileForm" data-aos="fade-up" data-aos-delay="200">
+            <input type="text" id="full_name" placeholder="Full Name" required>
+            <input type="number" id="age" placeholder="Age" required>
+
+            <select id="gender">
+                <option value="" disabled selected>Select Gender</option>
+                <option value="male">👨 Male</option>
+                <option value="female">👩 Female</option>
+            </select>
+
+            <input type="text" id="religion" placeholder="Religion" required>
+            <input type="text" id="caste" placeholder="Caste">
+            <input type="text" id="occupation" placeholder="Occupation">
+            <input type="text" id="city" placeholder="City" required>
+
+            <button type="submit">Save Profile</button>
+        </form>
+
+        <p class="next-link" data-aos="fade-up" data-aos-delay="400">
+            <a href="preferences.html">Go to Preferences →</a>
+        </p>
+    </div>
+
+    <!-- Bootstrap & AOS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
+    <!-- JS for profile -->
+    <script>
+        document.getElementById("profileForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const user_id = localStorage.getItem("user_id");
+
+            const full_name = document.getElementById("full_name").value;
+            const age = document.getElementById("age").value;
+            const gender = document.getElementById("gender").value;
+            const religion = document.getElementById("religion").value;
+            const caste = document.getElementById("caste").value;
+            const occupation = document.getElementById("occupation").value;
+            const city = document.getElementById("city").value;
+
+            const res = await fetch("http://localhost:3000/api/profile/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id, full_name, age, gender, religion, caste, occupation, city })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+        });
+    </script>
+</body>
+
+</html>
