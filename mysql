@@ -1,0 +1,46 @@
+create database matrimony;
+use matrimony;
+
+CREATE TABLE users (
+user_id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(100) NOT NULL UNIQUE,
+email VARCHAR(100) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL
+); should username have unique
+
+CREATE TABLE profile (
+  profile_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  full_name VARCHAR(100) NOT NULL,
+  age INT NOT NULL,
+  gender ENUM('male', 'female') NOT NULL,
+  religion VARCHAR(100) NOT NULL,
+  caste VARCHAR(100),
+  occupation VARCHAR(100),
+  city VARCHAR(100) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE preferences (
+  pref_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  preferred_gender ENUM('male','female') NOT NULL,
+  min_age INT NOT NULL,
+  max_age INT NOT NULL,
+  preferred_religion VARCHAR(100),
+  preferred_city VARCHAR(100),
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE matches (
+  match_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,          -- person who is searching
+  matched_user_id INT NOT NULL,  -- the person who matches criteria
+  match_score INT,               -- optional (only for ranking later)
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (matched_user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE
+);
