@@ -152,26 +152,55 @@
     <img class="illustration" src="https://cdn-icons-png.flaticon.com/512/3456/3456433.png" alt="Couple illustration">
 
     <script>
-        function savePreferences() {
+        async function savePreferences() {
             const user_id = localStorage.getItem("user_id");
+            
+            if (!user_id) {
+                alert("Please login first");
+                window.location.href = "login.html";
+                return;
+            }
 
-            fetch("http://localhost:3000/api/preferences/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id,
-                    preferred_gender: document.getElementById("preferred_gender").value,
-                    min_age: document.getElementById("min_age").value,
-                    max_age: document.getElementById("max_age").value,
-                    preferred_religion: document.getElementById("preferred_religion").value,
-                    preferred_city: document.getElementById("preferred_city").value
-                })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    window.location.href = "match.html";
+            const preferred_gender = document.getElementById("preferred_gender").value;
+            const min_age = document.getElementById("min_age").value;
+            const max_age = document.getElementById("max_age").value;
+
+            if (!preferred_gender || !min_age || !max_age) {
+                alert("Please fill in all required fields (Gender, Min Age, Max Age)");
+                return;
+            }
+
+            try {
+                const res = await fetch("http://localhost:3000/api/preferences/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id,
+                        preferred_gender,
+                        min_age,
+                        max_age,
+                        preferred_religion: document.getElementById("preferred_religion").value,
+                        preferred_city: document.getElementById("preferred_city").value
+                    })
                 });
+
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ message: "Failed to save preferences. Please try again." }));
+                    alert(errorData.message || "Failed to save preferences. Please try again.");
+                    return;
+                }
+
+                const data = await res.json();
+                alert(data.message || "Preferences saved successfully");
+                
+                // Redirect to match.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = "match.html";
+                }, 2000);
+            } catch (error) {
+                console.error("Preferences save error:", error);
+                alert("Network error. Please check your connection and try again.");
+            }
         }
     </script>
 </body>

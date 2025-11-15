@@ -165,7 +165,7 @@
         <div class="illustration" data-aos="fade-down" data-aos-delay="100"></div>
         <h2 data-aos="fade-up" data-aos-delay="200">Welcome Back 💜</h2>
         <form id="loginForm" data-aos="fade-up" data-aos-delay="400">
-            <input type="text" id="username" placeholder="Username" required />
+            <input type="email" id="email" placeholder="Email" required />
             <input type="password" id="password" placeholder="Password" required />
             <button type="submit">Login</button>
         </form>
@@ -186,21 +186,37 @@
         document.getElementById("loginForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
-            const res = await fetch("http://localhost:3000/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const res = await fetch("http://localhost:3000/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
 
-            const data = await res.json();
-            alert(data.message);
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ message: "Login failed. Please try again." }));
+                    alert(errorData.message || "Login failed. Please try again.");
+                    return;
+                }
 
-            if (data.message === "Login successful") {
-                localStorage.setItem("user_id", data.user_id);
-                window.location.href = "profile.html";
+                const data = await res.json();
+                alert(data.message || "Login successful");
+
+                if (data.message === "Login successful" && data.userId) {
+                    localStorage.setItem("user_id", data.userId);
+                    setTimeout(() => {
+                        window.location.href = "profile.html";
+                    }, 1000);
+                } else if (data.message === "Login successful") {
+                    // Fallback if userId is missing
+                    alert("Login successful but user ID not found. Please try again.");
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("Network error. Please check your connection and try again.");
             }
         });
     </script>

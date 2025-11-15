@@ -199,10 +199,22 @@
 
     <!-- JS for profile -->
     <script>
+        // Check if user is logged in
+        const user_id = localStorage.getItem("user_id");
+        if (!user_id) {
+            alert("Please login first");
+            window.location.href = "login.html";
+        }
+
         document.getElementById("profileForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const user_id = localStorage.getItem("user_id");
+            if (!user_id) {
+                alert("Please login first");
+                window.location.href = "login.html";
+                return;
+            }
 
             const full_name = document.getElementById("full_name").value;
             const age = document.getElementById("age").value;
@@ -212,14 +224,30 @@
             const occupation = document.getElementById("occupation").value;
             const city = document.getElementById("city").value;
 
-            const res = await fetch("http://localhost:3000/api/profile/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id, full_name, age, gender, religion, caste, occupation, city })
-            });
+            try {
+                const res = await fetch("http://localhost:3000/api/profile/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_id, full_name, age, gender, religion, caste, occupation, city })
+                });
 
-            const data = await res.json();
-            alert(data.message);
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ message: "Failed to save profile. Please try again." }));
+                    alert(errorData.message || "Failed to save profile. Please try again.");
+                    return;
+                }
+
+                const data = await res.json();
+                alert(data.message || "Profile saved successfully");
+                
+                // Redirect to preference.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = "preference.html";
+                }, 2000);
+            } catch (error) {
+                console.error("Profile save error:", error);
+                alert("Network error. Please check your connection and try again.");
+            }
         });
     </script>
 </body>
