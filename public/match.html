@@ -195,9 +195,10 @@
             <div class="avatar">${initials}</div>
             <div class="name">${m.full_name}</div>
             <div class="details">
-              Age: ${m.age} | ${m.gender}<br>
-              City: ${m.city}<br>
-              Religion: ${m.religion}
+              Age: ${m.age} | ${m.gender ? m.gender.charAt(0).toUpperCase() + m.gender.slice(1) : 'N/A'}<br>
+              City: ${m.city || 'N/A'}<br>
+              Religion: ${m.religion || 'N/A'}<br>
+              ${m.occupation ? `Occupation: ${m.occupation}` : ''}
             </div>
           </div>
         `;

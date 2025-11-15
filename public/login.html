@@ -203,16 +203,53 @@
                 }
 
                 const data = await res.json();
-                alert(data.message || "Login successful");
-
+                
                 if (data.message === "Login successful" && data.userId) {
                     localStorage.setItem("user_id", data.userId);
-                    setTimeout(() => {
-                        window.location.href = "profile.html";
-                    }, 1000);
+                    
+                    // Check if user has profile and preferences
+                    try {
+                        // Check profile
+                        const profileRes = await fetch(`http://localhost:3000/api/profile/${data.userId}`);
+                        const profile = profileRes.ok ? await profileRes.json() : null;
+                        
+                        // Check preferences
+                        const prefRes = await fetch(`http://localhost:3000/api/preferences/${data.userId}`);
+                        const preferences = prefRes.ok ? await prefRes.json() : null;
+                        
+                        // Determine redirect based on what exists
+                        if (!profile || !profile.full_name) {
+                            // No profile - go to profile page
+                            alert("Welcome! Please complete your profile.");
+                            setTimeout(() => {
+                                window.location.href = "profile.html";
+                            }, 1000);
+                        } else if (!preferences || !preferences.preferred_gender) {
+                            // Profile exists but no preferences - go to preferences page
+                            alert("Login successful! Please set your preferences.");
+                            setTimeout(() => {
+                                window.location.href = "preference.html";
+                            }, 1000);
+                        } else {
+                            // Both exist - go to dashboard to see all data
+                            alert("Login successful!");
+                            setTimeout(() => {
+                                window.location.href = "dashboard.html";
+                            }, 1000);
+                        }
+                    } catch (error) {
+                        // If check fails, default to profile page
+                        console.error("Error checking profile/preferences:", error);
+                        alert("Login successful!");
+                        setTimeout(() => {
+                            window.location.href = "profile.html";
+                        }, 1000);
+                    }
                 } else if (data.message === "Login successful") {
                     // Fallback if userId is missing
                     alert("Login successful but user ID not found. Please try again.");
+                } else {
+                    alert(data.message || "Login successful");
                 }
             } catch (error) {
                 console.error("Login error:", error);

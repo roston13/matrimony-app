@@ -60,8 +60,8 @@ router.get('/:user_id', (req, res) => {
 
     db.query(query, [user_id], (err, result) => {
         if (err) return res.status(500).json({ error: err });
-        if (result.length === 0) return res.status(404).json({ message: 'Preferences not found' });
-        res.json(result[0]);
+        // Return empty object instead of 404 if no preferences found
+        res.json(result[0] || {});
     });
 });
 

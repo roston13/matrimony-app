@@ -25,7 +25,7 @@ router.post('/generate', (req, res) => {
 
         // 2. Find matching users
         const matchQuery = `
-      SELECT p.user_id, p.full_name, p.age, p.gender, p.religion, p.city
+      SELECT p.user_id, p.full_name, p.age, p.gender, p.religion, p.city, p.occupation
       FROM profile p
       WHERE p.gender = ?
       AND p.age BETWEEN ? AND ?
